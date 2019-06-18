@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export LAUNCHER="io.vertx.core.Launcher"
-export VERTICLE="MainVerticle"
+export VERTICLE="io.teacheck.messenger.Messenger"
 export CMD="mvn compile"
 export VERTX_CMD="run"
 

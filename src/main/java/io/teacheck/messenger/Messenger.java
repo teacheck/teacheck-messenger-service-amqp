@@ -4,7 +4,6 @@ import io.vertx.amqp.*;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -63,15 +62,14 @@ public class Messenger extends AbstractVerticle {
     }
 
     private void consumirMensaje(AmqpMessage amqpMessage) {
-        JsonArray data = amqpMessage.bodyAsJsonArray();
-        logger.info("Persisting data");
+        JsonObject data = amqpMessage.bodyAsJsonObject();
         persistirDatos(data);
     }
 
-    private void persistirDatos(JsonArray data) {
+    private void persistirDatos(JsonObject data) {
         JsonObject object = new JsonObject()
                 .put("resultados-control", data);
-        webClient.post("/api/messenger/datos-ca")
+        webClient.post("/messenger/post-data")
                 .sendJsonObject(object, this::responseHandler);
     }
 
@@ -80,8 +78,6 @@ public class Messenger extends AbstractVerticle {
             logger.info("Request succeed with response status: " + asyncResponse.result().statusMessage());
             logger.info("Response body: " + asyncResponse.result().bodyAsString());
         } else {
-            logger.error("Request error code: " + asyncResponse.result().statusCode());
-            logger.error("Request error message: " + asyncResponse.result().statusMessage());
             logger.error("Cause: " + asyncResponse.cause());
         }
     }

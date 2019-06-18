@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  messenger:
+    image: maven:3-jdk-8-alpine
+    environment:
+      - BROKER_HOST
+      - BROKER_PORT
+      - BROKER_PASSWORD
+      - BROKER_USERNAME
+      - BROKER_TIMEOUT
+      - BROKER_QUEUE_NAME
+      - DB_SERVICE_HOST
+      - DB_SERVICE_PORT
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    command: ["sh", "redeploy.sh"]
+  broker:
+    image: rabbitmq:3-management
+    ports:
+      - 8080:15672
+      - 5672:5672
+    volumes:
+      - ./rabbitmq/conf/enabled_plugins:/etc/rabbitmq/enabled_plugins
